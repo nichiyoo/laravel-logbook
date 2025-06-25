@@ -2,12 +2,15 @@
 
 namespace App\Policies;
 
-use App\Enums\RoleType;
-use App\Models\Shift;
 use App\Models\User;
+use App\Models\Shift;
+use App\Enums\RoleType;
+use App\Traits\HasBulkDeletePolicy;
 
 class ShiftPolicy
 {
+  use HasBulkDeletePolicy;
+
   /**
    * Determine whether the user can view any models.
    */
@@ -21,7 +24,7 @@ class ShiftPolicy
    */
   public function view(User $user, Shift $shift): bool
   {
-    return $user->role === RoleType::Admin;
+    return true;
   }
 
   /**

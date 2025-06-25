@@ -2,13 +2,15 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use App\Enums\RoleType;
 use App\Models\DailyReport;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Traits\HasBulkDeletePolicy;
 
 class DailyReportPolicy
 {
+  use HasBulkDeletePolicy;
+
   /**
    * List of allowerd roles for the user.
    */

@@ -76,7 +76,8 @@ class UserResource extends Resource
           Tables\Actions\ViewAction::make()->icon(null),
           Tables\Actions\EditAction::make()->icon(null),
           Tables\Actions\DeleteAction::make()->icon(null),
-        ])->dropdown(true)
+        ])
+          ->dropdown(true)
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([

@@ -2,19 +2,29 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use App\Enums\RoleType;
 use App\Models\Project;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Traits\HasBulkDeletePolicy;
 
 class ProjectPolicy
 {
+  use HasBulkDeletePolicy;
+
+  /**
+   * List of allowerd roles for the user.
+   */
+  public array $allowed = [
+    RoleType::Admin,
+    RoleType::Manager,
+  ];
+
   /**
    * Determine whether the user can view any models.
    */
   public function viewAny(User $user): bool
   {
-    return true;
+    return in_array($user->role, $this->allowed);
   }
 
   /**
@@ -22,7 +32,7 @@ class ProjectPolicy
    */
   public function view(User $user, Project $project): bool
   {
-    return $user->role === RoleType::Admin;
+    return in_array($user->role, $this->allowed);
   }
 
   /**

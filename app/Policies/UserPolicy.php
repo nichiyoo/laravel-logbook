@@ -2,11 +2,14 @@
 
 namespace App\Policies;
 
-use App\Enums\RoleType;
 use App\Models\User;
+use App\Enums\RoleType;
+use App\Traits\HasBulkDeletePolicy;
 
 class UserPolicy
 {
+  use HasBulkDeletePolicy;
+
   /**
    * List of allowerd roles for the user.
    */

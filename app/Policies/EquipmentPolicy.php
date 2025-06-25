@@ -2,13 +2,15 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use App\Enums\RoleType;
 use App\Models\Equipment;
-use App\Models\User;
-use Illuminate\Auth\Access\Response;
+use App\Traits\HasBulkDeletePolicy;
 
 class EquipmentPolicy
 {
+  use HasBulkDeletePolicy;
+
   /**
    * Determine whether the user can view any models.
    */
@@ -22,7 +24,7 @@ class EquipmentPolicy
    */
   public function view(User $user, Equipment $equipment): bool
   {
-    return $user->role === RoleType::Admin;
+    return true;
   }
 
   /**

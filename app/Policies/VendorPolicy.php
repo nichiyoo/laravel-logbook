@@ -2,13 +2,15 @@
 
 namespace App\Policies;
 
-use App\Enums\RoleType;
 use App\Models\User;
 use App\Models\Vendor;
-use Illuminate\Auth\Access\Response;
+use App\Enums\RoleType;
+use App\Traits\HasBulkDeletePolicy;
 
 class VendorPolicy
 {
+  use HasBulkDeletePolicy;
+
   /**
    * Determine whether the user can view any models.
    */
@@ -22,7 +24,7 @@ class VendorPolicy
    */
   public function view(User $user, Vendor $vendor): bool
   {
-    return $user->role === RoleType::Admin;
+    return true;
   }
 
   /**
