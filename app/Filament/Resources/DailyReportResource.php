@@ -4,11 +4,14 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Infolists;
 use Filament\Forms\Form;
 use Asmit\FilamentUpload;
 use Filament\Tables\Table;
 use App\Models\DailyReport;
 use Filament\Resources\Resource;
+use Joaopaulolndev\FilamentPdfViewer;
+use Filament\Infolists\Components\Section;
 use App\Filament\Resources\DailyReportResource\Pages;
 
 class DailyReportResource extends Resource
@@ -28,10 +31,13 @@ class DailyReportResource extends Resource
 
   public static function form(Form $form): Form
   {
+    $today = now()->format('Y-m-d');
+
     return $form
       ->schema([
         Forms\Components\DatePicker::make('date')
           ->displayFormat('F j, Y')
+          ->default($today)
           ->native(false)
           ->required(),
         Forms\Components\Select::make('shift_id')
@@ -92,6 +98,31 @@ class DailyReportResource extends Resource
       ])
       ->recordAction(Tables\Actions\ViewAction::class);
   }
+
+  public static function infolist(Infolists\Infolist $infolist): Infolists\Infolist
+  {
+    return $infolist
+      ->schema([
+        Section::make('Daily Report Details')
+          ->description('The details of the daily report data')
+          ->schema([
+            Infolists\Components\TextEntry::make('user.name'),
+            Infolists\Components\TextEntry::make('date')->date(),
+            Infolists\Components\TextEntry::make('shift.label')->badge(),
+          ])
+          ->columns(2),
+        Section::make('Report')
+          ->id('report')
+          ->description('The report file')
+          ->schema([
+            FilamentPdfViewer\Infolists\Components\PdfViewerEntry::make('report')
+              ->hiddenLabel()
+              ->minHeight('60svh')
+              ->columnSpanFull(),
+          ]),
+      ]);
+  }
+
 
   public static function getRelations(): array
   {
