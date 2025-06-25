@@ -44,6 +44,8 @@ class AdminPanelProvider extends PanelProvider
         Widgets\AccountWidget::class,
         Widgets\FilamentInfoWidget::class,
         CustomWidgets\StatsOverview::class,
+        CustomWidgets\CraneUsageChart::class,
+        CustomWidgets\TrailerUsageChart::class,
       ])
       ->middleware([
         EncryptCookies::class,
