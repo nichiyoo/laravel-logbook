@@ -14,15 +14,14 @@ use Filament\Tables\Table;
 use App\Enums\EquipmentType;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\LogbookResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\LogbookResource\RelationManagers;
 
 class LogbookResource extends Resource
 {
   protected static ?string $model = Logbook::class;
   protected static ?string $navigationIcon = 'heroicon-o-document-chart-bar';
+  protected static ?int $navigationSort = 6;
+
   protected static ?array $dependant = [
     'equipment_id',
     'work_time',
@@ -32,7 +31,6 @@ class LogbookResource extends Resource
     'delivery_note',
     'internal_moving_note',
     'trailer_note',
-    'price'
   ];
 
   public static function getModelLabel(): string
@@ -47,10 +45,13 @@ class LogbookResource extends Resource
 
   public static function form(Form $form): Form
   {
+    $today = now();
+
     return $form
       ->schema([
         Forms\Components\DatePicker::make('date')
           ->displayFormat('F j, Y')
+          ->default($today)
           ->native(false)
           ->required(),
         Forms\Components\ToggleButtons::make('type')
@@ -95,25 +96,18 @@ class LogbookResource extends Resource
               ->required(),
           ]),
         Forms\Components\Select::make('equipment_id')
-          ->relationship('equipment', 'name')
-          ->options(fn(Get $get): Collection => Equipment::query()
-            ->where('type', $get('type'))
-            ->pluck('name', 'id'))
+          ->relationship('equipment', 'label')
+          ->options(
+            fn(Get $get): Collection => Equipment::query()
+              ->where('type', $get('type'))
+              ->get()
+              ->map(fn(Equipment $equipment) => $equipment->label)
+          )
           ->searchable()
           ->preload()
           ->required()
           ->visible(fn(Get $get): bool => $get('type') !== null)
-          ->live()
-          ->afterStateUpdated(function (Get $get, Set $set) {
-            $equipment = Equipment::find($get('equipment_id'));
-            $price = $get('price');
-            if ($price === null) $set('price', $equipment->price);
-          }),
-        Forms\Components\TextInput::make('price')
-          ->label('Price per hour')
-          ->prefix('Rp')
-          ->numeric()
-          ->visible(fn(Get $get): bool => $get('type') !== null),
+          ->live(),
         Forms\Components\Section::make('Crane Details')
           ->description('Fill the details of the crane log')
           ->visible(fn(Get $get): bool => $get('type') === EquipmentType::CRANE->value)
@@ -146,6 +140,15 @@ class LogbookResource extends Resource
           ->dateTime()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),
+        Tables\Columns\ImageColumn::make('equipment.image')
+          ->label('Image')
+          ->circular(),
+        Tables\Columns\TextColumn::make('equipment.code')
+          ->label('Code')
+          ->searchable(),
+        Tables\Columns\TextColumn::make('equipment.name')
+          ->label('Name')
+          ->searchable(),
         Tables\Columns\TextColumn::make('date')
           ->date()
           ->sortable(),
@@ -157,8 +160,6 @@ class LogbookResource extends Resource
           ->badge()
           ->sortable(),
         Tables\Columns\TextColumn::make('project.name')
-          ->sortable(),
-        Tables\Columns\TextColumn::make('equipment.name')
           ->sortable(),
       ])
       ->filters([

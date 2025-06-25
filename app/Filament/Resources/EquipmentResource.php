@@ -16,6 +16,7 @@ class EquipmentResource extends Resource
 {
   protected static ?string $model = Equipment::class;
   protected static ?string $navigationIcon = 'heroicon-o-wrench';
+  protected static ?int $navigationSort = 3;
 
   public static function getModelLabel(): string
   {

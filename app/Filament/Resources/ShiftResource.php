@@ -14,6 +14,7 @@ class ShiftResource extends Resource
 {
   protected static ?string $model = Shift::class;
   protected static ?string $navigationIcon = 'heroicon-o-clock';
+  protected static ?int $navigationSort = 1;
 
   public static function getModelLabel(): string
   {

@@ -22,7 +22,7 @@ return new class extends Migration
       $table->string('code')->nullable()->unique();
       $table->string('description')->nullable();
       $table->string('image')->nullable();
-      $table->integer('price')->default(0);
+      $table->bigInteger('price')->default(0);
       $table->enum('type', array_map(fn($type) => $type->value, $types));
       $table->foreignIdFor(Vendor::class)->constrained()->cascadeOnDelete();
     });

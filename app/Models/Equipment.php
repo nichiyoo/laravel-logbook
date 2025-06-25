@@ -50,6 +50,18 @@ class Equipment extends Model
   }
 
   /**
+   * Get the label of the equipment.
+   *
+   * @return string
+   */
+  public function label(): Attribute
+  {
+    return Attribute::make(
+      get: fn() => $this->name . ' - ' . $this->code,
+    );
+  }
+
+  /**
    * Get the logbooks that belong to the equipment.
    *
    * @return Illuminate\Database\Eloquent\Relations\HasMany
@@ -57,5 +69,15 @@ class Equipment extends Model
   public function logbooks(): HasMany
   {
     return $this->hasMany(Logbook::class);
+  }
+
+  /**
+   * Get the efficiency plannings that belong to the equipment.
+   *
+   * @return Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function plannings(): HasMany
+  {
+    return $this->hasMany(EfficiencyPlanning::class);
   }
 }

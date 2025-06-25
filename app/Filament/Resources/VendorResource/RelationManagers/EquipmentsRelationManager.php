@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\VendorResource\RelationManagers;
 
-use App\Filament\Resources\EquipmentResource;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Table;
+use App\Filament\Resources\EquipmentResource;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class EquipmentsRelationManager extends RelationManager
 {

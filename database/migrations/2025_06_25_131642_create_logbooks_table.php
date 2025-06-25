@@ -38,9 +38,6 @@ return new class extends Migration
       // trailer details
       $table->integer('trailer_time')->nullable()->comment('in hours');
       $table->text('trailer_note')->nullable();
-
-      // price details
-      $table->integer('price')->default(0)->comment('in IDR');
     });
   }
 
