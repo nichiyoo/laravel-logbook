@@ -2,20 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\StatusType;
-use App\Filament\Resources\ProjectResource\Pages;
-use App\Models\Project;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Project;
+use Filament\Forms\Form;
+use App\Enums\StatusType;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Resources\ProjectResource\Pages;
 
 class ProjectResource extends Resource
 {
   protected static ?string $model = Project::class;
   protected static ?string $navigationIcon = 'heroicon-o-briefcase';
-  protected static ?int $navigationSort = 3;
 
   public static function getModelLabel(): string
   {
@@ -24,7 +23,7 @@ class ProjectResource extends Resource
 
   public static function getNavigationGroup(): ?string
   {
-    return __('Management');
+    return __('Log Management');
   }
 
   public static function form(Form $form): Form
@@ -78,7 +77,8 @@ class ProjectResource extends Resource
         Tables\Actions\BulkActionGroup::make([
           Tables\Actions\DeleteBulkAction::make()->icon(null),
         ]),
-      ]);
+      ])
+      ->recordAction(Tables\Actions\ViewAction::class);
   }
 
   public static function getRelations(): array

@@ -5,55 +5,52 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
-use App\Models\Equipment;
+use Asmit\FilamentUpload;
 use Filament\Tables\Table;
+use App\Models\DailyReport;
 use Filament\Resources\Resource;
-use App\Filament\Resources\EquipmentResource\Pages;
+use App\Filament\Resources\DailyReportResource\Pages;
 
-class EquipmentResource extends Resource
+class DailyReportResource extends Resource
 {
-  protected static ?string $model = Equipment::class;
-  protected static ?string $navigationIcon = 'heroicon-o-wrench';
+  protected static ?string $model = DailyReport::class;
+  protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
   public static function getModelLabel(): string
   {
-    return __('Equipment');
+    return __('Daily Reports');
   }
 
   public static function getNavigationGroup(): ?string
   {
-    return __('Management');
+    return __('Log Management');
   }
 
   public static function form(Form $form): Form
   {
     return $form
       ->schema([
-        Forms\Components\Select::make('vendor_id')
-          ->relationship('vendor', 'id')
+        Forms\Components\DatePicker::make('date')
+          ->displayFormat('F j, Y')
+          ->native(false)
+          ->required(),
+        Forms\Components\Select::make('shift_id')
+          ->relationship('shift', 'label')
           ->searchable()
           ->preload()
-          ->required()
           ->createOptionForm([
-            Forms\Components\TextInput::make('name')
+            Forms\Components\TextInput::make('label')
               ->required(),
             Forms\Components\Textarea::make('description')
-              ->required()
-              ->columnSpanFull(),
+              ->required(),
           ]),
-        Forms\Components\TextInput::make('name')
-          ->required(),
-        Forms\Components\TextInput::make('code')
-          ->nullable()
-          ->unique(ignoreRecord: true),
-        Forms\Components\Textarea::make('description')
-          ->required()
+        FilamentUpload\Forms\Components\AdvancedFileUpload::make('report')
+          ->label('Upload report')
+          ->acceptedFileTypes([
+            'application/pdf',
+          ])
+          ->pdfPreviewHeight(400)
           ->columnSpanFull(),
-        Forms\Components\FileUpload::make('image')
-          ->image()
-          ->imageEditor()
-          ->columnSpanFull()
-          ->imageEditorMode(3),
       ]);
   }
 
@@ -69,17 +66,14 @@ class EquipmentResource extends Resource
           ->dateTime()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),
-        Tables\Columns\ImageColumn::make('image')
-          ->circular(),
-        Tables\Columns\TextColumn::make('name')
-          ->searchable(),
-        Tables\Columns\TextColumn::make('code')
+        Tables\Columns\TextColumn::make('date')
+          ->date()
+          ->sortable(),
+        Tables\Columns\TextColumn::make('user.name')
+          ->sortable(),
+        Tables\Columns\TextColumn::make('shift.label')
           ->badge()
-          ->searchable(),
-        Tables\Columns\TextColumn::make('vendor.name')
-          ->numeric(),
-        Tables\Columns\TextColumn::make('description')
-          ->searchable(),
+          ->sortable(),
       ])
       ->filters([
         //
@@ -93,7 +87,7 @@ class EquipmentResource extends Resource
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
-          Tables\Actions\DeleteBulkAction::make()->icon(null),
+          Tables\Actions\DeleteBulkAction::make(),
         ]),
       ])
       ->recordAction(Tables\Actions\ViewAction::class);
@@ -109,9 +103,10 @@ class EquipmentResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListEquipment::route('/'),
-      'create' => Pages\CreateEquipment::route('/create'),
-      'edit' => Pages\EditEquipment::route('/{record}/edit'),
+      'index' => Pages\ListDailyReports::route('/'),
+      'create' => Pages\CreateDailyReport::route('/create'),
+      'view' => Pages\ViewDailyReport::route('/{record}'),
+      'edit' => Pages\EditDailyReport::route('/{record}/edit'),
     ];
   }
 }

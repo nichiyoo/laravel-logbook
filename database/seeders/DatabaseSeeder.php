@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\RoleType;
 use App\Models\Equipment;
+use App\Models\Shift;
 use App\Models\User;
 use App\Models\Vendor;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -35,30 +36,12 @@ class DatabaseSeeder extends Seeder
     ]);
 
     $vendors = [
-      [
-        'id' => 1,
-        'name' => 'SPM',
-      ],
-      [
-        'id' => 2,
-        'name' => 'NURUL A\'LA',
-      ],
-      [
-        'id' => 3,
-        'name' => 'BCK',
-      ],
-      [
-        'id' => 4,
-        'name' => 'BKSI',
-      ],
-      [
-        'id' => 5,
-        'name' => 'BPI',
-      ],
-      [
-        'id' => 6,
-        'name' => 'SWARNA',
-      ],
+      ['id' => 1, 'name' => 'SPM'],
+      ['id' => 2, 'name' => 'NURUL A\'LA'],
+      ['id' => 3, 'name' => 'BCK'],
+      ['id' => 4, 'name' => 'BKSI'],
+      ['id' => 5, 'name' => 'BPI'],
+      ['id' => 6, 'name' => 'SWARNA'],
     ];
 
     foreach ($vendors as $vendor) {
@@ -66,56 +49,30 @@ class DatabaseSeeder extends Seeder
     }
 
     $equipments = [
-      [
-        'vendor_id' => 1,
-        'name' => 'CRANE CM2',
-        'code' => 'A8811YA',
-      ],
-      [
-        'vendor_id' => 1,
-        'name' => 'CRANE CM2',
-        'code' => 'B9439ES',
-      ],
-      [
-        'vendor_id' => 1,
-        'name' => 'CRANE 35T',
-        'code' => 'B9980V',
-      ],
-      [
-        'vendor_id' => 1,
-        'name' => 'CRANE CM2',
-        'code' => 'B8168UAl',
-      ],
-      [
-        'vendor_id' => 2,
-        'name' => 'CRANE CM2',
-        'code' => 'B9598JZ',
-      ],
-      [
-        'vendor_id' => 2,
-        'name' => 'CRANE CM2',
-        'code' => 'B9383FH',
-      ],
-      [
-        'vendor_id' => 3,
-        'name' => 'TRAILER KPI-BCK',
-      ],
-      [
-        'vendor_id' => 4,
-        'name' => 'TRAILER KPI-BKSI',
-      ],
-      [
-        'vendor_id' => 5,
-        'name' => 'TRAILER KPI-BPI',
-      ],
-      [
-        'vendor_id' => 6,
-        'name' => 'TRAILER KA-SWARNA',
-      ],
+      ['vendor_id' => 1, 'name' => 'CRANE CM2', 'code' => 'A8811YA'],
+      ['vendor_id' => 1, 'name' => 'CRANE CM2', 'code' => 'B9439ES'],
+      ['vendor_id' => 1, 'name' => 'CRANE 35T', 'code' => 'B9980V'],
+      ['vendor_id' => 1, 'name' => 'CRANE CM2', 'code' => 'B8168UAl'],
+      ['vendor_id' => 2, 'name' => 'CRANE CM2', 'code' => 'B9598JZ'],
+      ['vendor_id' => 2, 'name' => 'CRANE CM2', 'code' => 'B9383FH'],
+      ['vendor_id' => 3, 'name' => 'TRAILER KPI-BCK'],
+      ['vendor_id' => 4, 'name' => 'TRAILER KPI-BKSI'],
+      ['vendor_id' => 5, 'name' => 'TRAILER KPI-BPI'],
+      ['vendor_id' => 6, 'name' => 'TRAILER KA-SWARNA'],
     ];
 
     foreach ($equipments as $equipment) {
       Equipment::create($equipment);
+    }
+
+    $shifts = [
+      ['label' => 'Shift 1', 'description' => 'This is shift 1'],
+      ['label' => 'Shift 2', 'description' => 'This is shift 2'],
+      ['label' => 'Shift 3', 'description' => 'This is shift 3'],
+    ];
+
+    foreach ($shifts as $shift) {
+      Shift::create($shift);
     }
   }
 }

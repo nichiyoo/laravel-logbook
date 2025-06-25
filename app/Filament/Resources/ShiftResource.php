@@ -2,19 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ShiftResource\Pages;
-use App\Models\Shift;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Shift;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Resources\ShiftResource\Pages;
 
 class ShiftResource extends Resource
 {
   protected static ?string $model = Shift::class;
   protected static ?string $navigationIcon = 'heroicon-o-clock';
-  protected static ?int $navigationSort = 2;
 
   public static function getModelLabel(): string
   {
@@ -69,7 +68,8 @@ class ShiftResource extends Resource
         Tables\Actions\BulkActionGroup::make([
           Tables\Actions\DeleteBulkAction::make()->icon(null),
         ]),
-      ]);
+      ])
+      ->recordAction(Tables\Actions\ViewAction::class);
   }
 
   public static function getRelations(): array

@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use Filament\Actions\ViewAction;
-use Filament\Facades\Filament;
-use Filament\Navigation\NavigationItem;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
+use Filament\Facades\Filament;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Actions\Action;
+use Filament\Navigation\NavigationItem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Filament\Tables\Columns\ImageColumn;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
       Table::$defaultDateDisplayFormat = 'F j Y';
       Table::$defaultDateTimeDisplayFormat = 'F j, Y g:i A';
       Table::$defaultTimeDisplayFormat = 'g:i A';
+
+      $table->toggleColumnsTriggerAction(function (Action $action) {
+        return $action->icon('heroicon-o-ellipsis-vertical');
+      });
     });
 
     ImageColumn::configureUsing(function ($column) {

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\RoleType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -48,5 +49,15 @@ class User extends Authenticatable
       'email_verified_at' => 'datetime',
       'role' => RoleType::class,
     ];
+  }
+
+  /**
+   * Get the reports that belong to the user.
+   *
+   * @return Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function reports(): HasMany
+  {
+    return $this->hasMany(DailyReport::class);
   }
 }

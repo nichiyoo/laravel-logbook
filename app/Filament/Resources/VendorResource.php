@@ -2,20 +2,19 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\Vendor;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use App\Filament\Resources\VendorResource\Pages;
 use App\Filament\Resources\VendorResource\RelationManagers;
-use App\Models\Vendor;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
 
 class VendorResource extends Resource
 {
   protected static ?string $model = Vendor::class;
   protected static ?string $navigationIcon = 'heroicon-o-building-office';
-  protected static ?int $navigationSort = 4;
 
   public static function getModelLabel(): string
   {
@@ -74,7 +73,8 @@ class VendorResource extends Resource
         Tables\Actions\BulkActionGroup::make([
           Tables\Actions\DeleteBulkAction::make()->icon(null),
         ]),
-      ]);
+      ])
+      ->recordAction(Tables\Actions\ViewAction::class);
   }
 
   public static function getRelations(): array

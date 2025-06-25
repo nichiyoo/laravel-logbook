@@ -2,20 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\RoleType;
-use App\Filament\Resources\UserResource\Pages;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use App\Enums\RoleType;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use App\Filament\Resources\UserResource\Pages;
 
 class UserResource extends Resource
 {
   protected static ?string $model = User::class;
   protected static ?string $navigationIcon = 'heroicon-o-users';
-  protected static ?int $navigationSort = 1;
 
   public static function getModelLabel(): string
   {
@@ -83,7 +82,8 @@ class UserResource extends Resource
         Tables\Actions\BulkActionGroup::make([
           Tables\Actions\DeleteBulkAction::make()->icon(null),
         ]),
-      ]);
+      ])
+      ->recordAction(Tables\Actions\ViewAction::class);
   }
 
   public static function getRelations(): array
