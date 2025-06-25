@@ -34,32 +34,6 @@ class DatabaseSeeder extends Seeder
       'role' => RoleType::Frontman,
     ]);
 
-    /*
-    SPM
-    - CRANE CM2 (A8811YA)
-    - CRANE CM2 (B9439ES)
-    - CRANE CM2 (B8168UAl)
-    - CRANE CM2 (A5960U)
-
-    NURUL A'LA
-    - CRANE 35T (B9980V)
-    - CRANE 35T (B9907V)
-    - CRANE CM2 (B9598JZ)
-    - CRANE CM2 (B9383FH)
-
-    BCK
-    - TRAILER KPI-BCK
-
-    BKSI
-    - TRAILER KPI-BKSI
-
-    BPI
-    - TRAILER KPI-BPI
-
-    SWARNA
-    - TRAILER KA-SWARNA
-    */
-
     $vendors = [
       [
         'id' => 1,

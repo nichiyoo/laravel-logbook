@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VendorResource extends Resource
 {
@@ -66,7 +64,9 @@ class VendorResource extends Resource
         //
       ])
       ->actions([
+        Tables\Actions\ViewAction::make(),
         Tables\Actions\EditAction::make(),
+        Tables\Actions\DeleteAction::make(),
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
@@ -78,7 +78,7 @@ class VendorResource extends Resource
   public static function getRelations(): array
   {
     return [
-      //
+      RelationManagers\EquipmentsRelationManager::class,
     ];
   }
 
@@ -86,6 +86,7 @@ class VendorResource extends Resource
   {
     return [
       'index' => Pages\ListVendors::route('/'),
+      'view' => Pages\ViewVendor::route('/{record}'),
       'create' => Pages\CreateVendor::route('/create'),
       'edit' => Pages\EditVendor::route('/{record}/edit'),
     ];

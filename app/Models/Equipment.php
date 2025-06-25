@@ -44,7 +44,6 @@ class Equipment extends Model
 
     return Attribute::make(
       get: fn() => $this->attributes['image'] ?? (string) $default,
-      set: fn($value) => $this->setImageAttribute($value),
     );
   }
 }

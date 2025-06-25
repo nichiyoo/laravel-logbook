@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationItem;
 use Filament\Tables\Columns\ImageColumn;

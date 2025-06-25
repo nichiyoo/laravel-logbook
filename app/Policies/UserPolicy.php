@@ -4,16 +4,23 @@ namespace App\Policies;
 
 use App\Enums\RoleType;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
+  /**
+   * List of allowerd roles for the user.
+   */
+  public array $allowed = [
+    RoleType::Admin,
+    RoleType::Manager,
+  ];
+
   /**
    * Determine whether the user can view any models.
    */
   public function viewAny(User $user): bool
   {
-    return true;
+    return in_array($user->role, $this->allowed);
   }
 
   /**
@@ -21,7 +28,7 @@ class UserPolicy
    */
   public function view(User $user, User $model): bool
   {
-    return $user->role === RoleType::Admin;
+    return in_array($user->role, $this->allowed);
   }
 
   /**
