@@ -26,6 +26,7 @@ class Logbook extends Model
     'shift_id',
     'project_id',
     'equipment_id',
+    'price',
   ];
 
   /**

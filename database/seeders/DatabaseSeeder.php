@@ -63,7 +63,10 @@ class DatabaseSeeder extends Seeder
     ];
 
     foreach ($equipments as $equipment) {
-      Equipment::create($equipment);
+      Equipment::create([
+        ...$equipment,
+        'price' => random_int(1000, 10000) * 1000,
+      ]);
     }
 
     $shifts = [

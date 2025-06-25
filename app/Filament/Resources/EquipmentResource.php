@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use App\Models\Equipment;
 use Filament\Tables\Table;
+use Filament\Support\RawJs;
 use App\Enums\EquipmentType;
 use Filament\Resources\Resource;
 use App\Filament\Resources\EquipmentResource\Pages;
@@ -48,6 +49,10 @@ class EquipmentResource extends Resource
         Forms\Components\TextInput::make('code')
           ->nullable()
           ->unique(ignoreRecord: true),
+        Forms\Components\TextInput::make('price')
+          ->prefix('Rp')
+          ->numeric()
+          ->required(),
         Forms\Components\ToggleButtons::make('type')
           ->options(EquipmentType::class)
           ->inline()
@@ -81,6 +86,9 @@ class EquipmentResource extends Resource
           ->searchable(),
         Tables\Columns\TextColumn::make('name')
           ->searchable(),
+        Tables\Columns\TextColumn::make('price')
+          ->money('IDR')
+          ->sortable(),
         Tables\Columns\TextColumn::make('type')
           ->badge()
           ->searchable(),

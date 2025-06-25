@@ -19,6 +19,7 @@ class Equipment extends Model
     'name',
     'description',
     'image',
+    'price',
     'vendor_id',
   ];
 

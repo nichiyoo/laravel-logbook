@@ -32,6 +32,7 @@ class LogbookResource extends Resource
     'delivery_note',
     'internal_moving_note',
     'trailer_note',
+    'price'
   ];
 
   public static function getModelLabel(): string
@@ -101,6 +102,17 @@ class LogbookResource extends Resource
           ->searchable()
           ->preload()
           ->required()
+          ->visible(fn(Get $get): bool => $get('type') !== null)
+          ->live()
+          ->afterStateUpdated(function (Get $get, Set $set) {
+            $equipment = Equipment::find($get('equipment_id'));
+            $price = $get('price');
+            if ($price === null) $set('price', $equipment->price);
+          }),
+        Forms\Components\TextInput::make('price')
+          ->label('Price per hour')
+          ->prefix('Rp')
+          ->numeric()
           ->visible(fn(Get $get): bool => $get('type') !== null),
         Forms\Components\Section::make('Crane Details')
           ->description('Fill the details of the crane log')

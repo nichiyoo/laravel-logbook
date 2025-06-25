@@ -28,16 +28,19 @@ return new class extends Migration
       $table->foreignIdFor(Project::class)->constrained()->cascadeOnDelete();
       $table->foreignIdFor(Equipment::class)->constrained()->cascadeOnDelete();
 
-      // Crane details
+      // crane details
       $table->integer('work_time')->nullable()->comment('in hours');
       $table->integer('delivery_time')->nullable()->comment('in hours');
       $table->text('work_note')->nullable();
       $table->text('delivery_note')->nullable();
       $table->text('internal_moving_note')->nullable();
 
-      // Trailer details
+      // trailer details
       $table->integer('trailer_time')->nullable()->comment('in hours');
       $table->text('trailer_note')->nullable();
+
+      // price details
+      $table->integer('price')->default(0)->comment('in IDR');
     });
   }
 
