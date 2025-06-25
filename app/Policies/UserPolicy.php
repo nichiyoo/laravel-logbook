@@ -14,8 +14,8 @@ class UserPolicy
    * List of allowerd roles for the user.
    */
   public array $allowed = [
-    RoleType::Admin,
-    RoleType::Manager,
+    RoleType::ADMIN,
+    RoleType::MANAGER,
   ];
 
   /**
@@ -39,7 +39,7 @@ class UserPolicy
    */
   public function create(User $user): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**
@@ -47,7 +47,7 @@ class UserPolicy
    */
   public function update(User $user, User $model): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**
@@ -55,7 +55,7 @@ class UserPolicy
    */
   public function delete(User $user, User $model): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**

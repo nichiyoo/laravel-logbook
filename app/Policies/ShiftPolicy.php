@@ -32,7 +32,7 @@ class ShiftPolicy
    */
   public function create(User $user): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**
@@ -40,7 +40,7 @@ class ShiftPolicy
    */
   public function update(User $user, Shift $shift): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**
@@ -48,7 +48,7 @@ class ShiftPolicy
    */
   public function delete(User $user, Shift $shift): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**

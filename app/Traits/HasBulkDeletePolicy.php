@@ -14,6 +14,6 @@ trait HasBulkDeletePolicy
    */
   public function deleteAny(User $user): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 }

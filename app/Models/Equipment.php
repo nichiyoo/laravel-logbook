@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Uri;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Equipment extends Model
 {
@@ -45,5 +46,15 @@ class Equipment extends Model
     return Attribute::make(
       get: fn() => $this->attributes['image'] ?? (string) $default,
     );
+  }
+
+  /**
+   * Get the logbooks that belong to the equipment.
+   *
+   * @return Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function logbooks(): HasMany
+  {
+    return $this->hasMany(Logbook::class);
   }
 }

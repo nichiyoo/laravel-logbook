@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use App\Models\Equipment;
 use Filament\Tables\Table;
+use App\Enums\EquipmentType;
 use Filament\Resources\Resource;
 use App\Filament\Resources\EquipmentResource\Pages;
 
@@ -30,7 +31,7 @@ class EquipmentResource extends Resource
     return $form
       ->schema([
         Forms\Components\Select::make('vendor_id')
-          ->relationship('vendor', 'id')
+          ->relationship('vendor', 'name')
           ->searchable()
           ->preload()
           ->required()
@@ -42,10 +43,15 @@ class EquipmentResource extends Resource
               ->columnSpanFull(),
           ]),
         Forms\Components\TextInput::make('name')
+          ->columnSpanFull()
           ->required(),
         Forms\Components\TextInput::make('code')
           ->nullable()
           ->unique(ignoreRecord: true),
+        Forms\Components\ToggleButtons::make('type')
+          ->options(EquipmentType::class)
+          ->inline()
+          ->required(),
         Forms\Components\Textarea::make('description')
           ->required()
           ->columnSpanFull(),
@@ -71,9 +77,11 @@ class EquipmentResource extends Resource
           ->toggleable(isToggledHiddenByDefault: true),
         Tables\Columns\ImageColumn::make('image')
           ->circular(),
+        Tables\Columns\TextColumn::make('code')
+          ->searchable(),
         Tables\Columns\TextColumn::make('name')
           ->searchable(),
-        Tables\Columns\TextColumn::make('code')
+        Tables\Columns\TextColumn::make('type')
           ->badge()
           ->searchable(),
         Tables\Columns\TextColumn::make('vendor.name')

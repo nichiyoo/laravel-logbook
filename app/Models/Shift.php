@@ -26,4 +26,14 @@ class Shift extends Model
   {
     return $this->hasMany(DailyReport::class);
   }
+
+  /**
+   * Get the logbooks that belong to the shift.
+   *
+   * @return Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function logbooks(): HasMany
+  {
+    return $this->hasMany(Logbook::class);
+  }
 }

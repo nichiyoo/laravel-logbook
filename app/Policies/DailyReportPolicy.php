@@ -15,8 +15,8 @@ class DailyReportPolicy
    * List of allowerd roles for the user.
    */
   public array $allowed = [
-    RoleType::Admin,
-    RoleType::Frontman,
+    RoleType::ADMIN,
+    RoleType::FRONTMAN,
   ];
 
   /**
@@ -48,7 +48,7 @@ class DailyReportPolicy
    */
   public function update(User $user, DailyReport $dailyReport): bool
   {
-    return $user->role === RoleType::Admin || $dailyReport->user->is($user);
+    return $user->role === RoleType::ADMIN || $dailyReport->user->is($user);
   }
 
   /**
@@ -56,7 +56,7 @@ class DailyReportPolicy
    */
   public function delete(User $user, DailyReport $dailyReport): bool
   {
-    return $user->role === RoleType::Admin || $dailyReport->user->is($user);
+    return $user->role === RoleType::ADMIN || $dailyReport->user->is($user);
   }
 
   /**

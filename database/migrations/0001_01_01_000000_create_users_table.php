@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\RoleType;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -19,7 +19,7 @@ return new class extends Migration
       $table->string('name');
       $table->string('email')->unique();
       $table->timestamp('email_verified_at')->nullable();
-      $table->enum('role', array_map(fn($role) => $role->value, $roles))->default(RoleType::Admin);
+      $table->enum('role', array_map(fn($role) => $role->value, $roles))->default(RoleType::ADMIN);
       $table->string('password');
       $table->rememberToken();
       $table->timestamps();

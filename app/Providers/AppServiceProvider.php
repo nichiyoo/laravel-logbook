@@ -35,7 +35,7 @@ class AppServiceProvider extends ServiceProvider
       Table::$defaultTimeDisplayFormat = 'g:i A';
 
       $table->toggleColumnsTriggerAction(function (Action $action) {
-        return $action->icon('heroicon-o-ellipsis-vertical');
+        return $action->icon('heroicon-o-view-columns');
       });
     });
 

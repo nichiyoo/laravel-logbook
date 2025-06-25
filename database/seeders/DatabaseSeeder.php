@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
+use App\Models\Shift;
+use App\Models\Vendor;
 use App\Enums\RoleType;
 use App\Models\Equipment;
-use App\Models\Shift;
-use App\Models\User;
-use App\Models\Vendor;
+use App\Enums\EquipmentType;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,19 +21,19 @@ class DatabaseSeeder extends Seeder
     User::factory()->create([
       'name' => 'Administrator',
       'email' => 'admin@example.com',
-      'role' => RoleType::Admin,
+      'role' => RoleType::ADMIN,
     ]);
 
     User::factory()->create([
       'name' => 'Manager',
       'email' => 'manager@example.com',
-      'role' => RoleType::Manager,
+      'role' => RoleType::MANAGER,
     ]);
 
     User::factory()->create([
       'name' => 'Frontman',
       'email' => 'frontman@example.com',
-      'role' => RoleType::Frontman,
+      'role' => RoleType::FRONTMAN,
     ]);
 
     $vendors = [
@@ -49,16 +50,16 @@ class DatabaseSeeder extends Seeder
     }
 
     $equipments = [
-      ['vendor_id' => 1, 'name' => 'CRANE CM2', 'code' => 'A8811YA'],
-      ['vendor_id' => 1, 'name' => 'CRANE CM2', 'code' => 'B9439ES'],
-      ['vendor_id' => 1, 'name' => 'CRANE 35T', 'code' => 'B9980V'],
-      ['vendor_id' => 1, 'name' => 'CRANE CM2', 'code' => 'B8168UAl'],
-      ['vendor_id' => 2, 'name' => 'CRANE CM2', 'code' => 'B9598JZ'],
-      ['vendor_id' => 2, 'name' => 'CRANE CM2', 'code' => 'B9383FH'],
-      ['vendor_id' => 3, 'name' => 'TRAILER KPI-BCK'],
-      ['vendor_id' => 4, 'name' => 'TRAILER KPI-BKSI'],
-      ['vendor_id' => 5, 'name' => 'TRAILER KPI-BPI'],
-      ['vendor_id' => 6, 'name' => 'TRAILER KA-SWARNA'],
+      ['vendor_id' => 1, 'type' => EquipmentType::CRANE, 'name' => 'CRANE CM2', 'code' => 'A8811YA'],
+      ['vendor_id' => 1, 'type' => EquipmentType::CRANE, 'name' => 'CRANE CM2', 'code' => 'B9439ES'],
+      ['vendor_id' => 1, 'type' => EquipmentType::CRANE, 'name' => 'CRANE 35T', 'code' => 'B9980V'],
+      ['vendor_id' => 1, 'type' => EquipmentType::CRANE, 'name' => 'CRANE CM2', 'code' => 'B8168UAl'],
+      ['vendor_id' => 2, 'type' => EquipmentType::CRANE, 'name' => 'CRANE CM2', 'code' => 'B9598JZ'],
+      ['vendor_id' => 2, 'type' => EquipmentType::CRANE, 'name' => 'CRANE CM2', 'code' => 'B9383FH'],
+      ['vendor_id' => 3, 'type' => EquipmentType::TRAILER, 'name' => 'TRAILER KPI', 'code' => 'BCK'],
+      ['vendor_id' => 4, 'type' => EquipmentType::TRAILER, 'name' => 'TRAILER KPI', 'code' => 'BKSI'],
+      ['vendor_id' => 5, 'type' => EquipmentType::TRAILER, 'name' => 'TRAILER KPI', 'code' => 'BPI'],
+      ['vendor_id' => 6, 'type' => EquipmentType::TRAILER, 'name' => 'TRAILER KA', 'code' => 'SWARNA'],
     ];
 
     foreach ($equipments as $equipment) {
@@ -66,9 +67,9 @@ class DatabaseSeeder extends Seeder
     }
 
     $shifts = [
-      ['label' => 'Shift 1', 'description' => 'This is shift 1'],
-      ['label' => 'Shift 2', 'description' => 'This is shift 2'],
-      ['label' => 'Shift 3', 'description' => 'This is shift 3'],
+      ['label' => 'Shift 1', 'description' => 'Shift pertama pukul 09.00 WIB - 17.00 WIB'],
+      ['label' => 'Shift 2', 'description' => 'Shift kedua pukul 17.00 WIB - 01.00 WIB'],
+      ['label' => 'Shift 3', 'description' => 'Shift ketiga pukul 01.00 WIB - 09.00 WIB'],
     ];
 
     foreach ($shifts as $shift) {

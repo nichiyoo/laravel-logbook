@@ -1,9 +1,10 @@
 <?php
 
 use App\Models\Vendor;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Enums\EquipmentType;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -12,13 +13,16 @@ return new class extends Migration
    */
   public function up(): void
   {
-    Schema::create('equipment', function (Blueprint $table) {
+    $types = EquipmentType::cases();
+
+    Schema::create('equipment', function (Blueprint $table) use ($types) {
       $table->id();
       $table->timestamps();
       $table->string('name');
       $table->string('code')->nullable()->unique();
       $table->string('description')->nullable();
       $table->string('image')->nullable();
+      $table->enum('type', array_map(fn($type) => $type->value, $types));
       $table->foreignIdFor(Vendor::class)->constrained()->cascadeOnDelete();
     });
   }

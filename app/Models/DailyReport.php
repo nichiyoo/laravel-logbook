@@ -51,8 +51,8 @@ class DailyReport extends Model
   public function scopeOwned(Builder $query): Builder
   {
     $allowed = [
-      RoleType::Admin,
-      RoleType::Manager,
+      RoleType::ADMIN,
+      RoleType::MANAGER,
     ];
 
     $user = Auth::user();

@@ -32,7 +32,7 @@ class EquipmentPolicy
    */
   public function create(User $user): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**
@@ -40,7 +40,7 @@ class EquipmentPolicy
    */
   public function update(User $user, Equipment $equipment): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**
@@ -48,7 +48,7 @@ class EquipmentPolicy
    */
   public function delete(User $user, Equipment $equipment): bool
   {
-    return $user->role === RoleType::Admin;
+    return $user->role === RoleType::ADMIN;
   }
 
   /**

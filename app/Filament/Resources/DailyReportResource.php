@@ -14,7 +14,7 @@ use App\Filament\Resources\DailyReportResource\Pages;
 class DailyReportResource extends Resource
 {
   protected static ?string $model = DailyReport::class;
-  protected static ?string $navigationIcon = 'heroicon-o-calendar';
+  protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
   public static function getModelLabel(): string
   {
