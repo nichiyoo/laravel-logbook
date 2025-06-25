@@ -8,12 +8,12 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditVendor extends EditRecord
 {
-    protected static string $resource = VendorResource::class;
+  protected static string $resource = VendorResource::class;
 
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
+  protected function getHeaderActions(): array
+  {
+    return [
+      Actions\DeleteAction::make()->icon(null),
+    ];
+  }
 }
