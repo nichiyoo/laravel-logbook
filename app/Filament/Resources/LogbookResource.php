@@ -151,6 +151,7 @@ class LogbookResource extends Resource
         Tables\Columns\TextColumn::make('project.name')
           ->sortable(),
       ])
+      ->defaultSort('date', 'asc')
       ->filters([
         //
       ])
