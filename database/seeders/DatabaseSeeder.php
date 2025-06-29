@@ -6,10 +6,13 @@ use App\Models\User;
 use App\Models\Shift;
 use App\Models\Vendor;
 use App\Enums\RoleType;
+use App\Models\Logbook;
+use App\Models\Project;
 use App\Models\Equipment;
 use App\Enums\EquipmentType;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Seeder;
+use App\Models\EfficiencyPlanning;
 
 class DatabaseSeeder extends Seeder
 {
@@ -77,6 +80,66 @@ class DatabaseSeeder extends Seeder
 
     foreach ($shifts as $shift) {
       Shift::create($shift);
+    }
+
+    $year = now()->year;
+    $months = range(1, 12);
+    $equipments = Equipment::all();
+
+    $project = Project::create([
+      'name' => 'Test Project',
+      'description' => 'Test project description',
+    ]);
+
+    foreach ($months as $month) {
+      $date = Carbon::create($year, $month, 1);
+      $max = Carbon::create($year, $month)->daysInMonth;
+
+      $equipments->each(function ($equipment) use ($date, $project, $max) {
+        $randoms = collect([
+          'planning_week_1' => random_int(10, 100),
+          'planning_week_2' => random_int(10, 100),
+          'planning_week_3' => random_int(10, 100),
+          'planning_week_4' => random_int(10, 100),
+        ]);
+
+        EfficiencyPlanning::create([
+          'year' => $date->year,
+          'month' => $date->month,
+          'equipment_id' => $equipment->id,
+          'target' => $randoms->sum() * $equipment->price,
+          ...$randoms->toArray(),
+        ]);
+
+        $randoms = collect([
+          'work_time' => random_int(1, 30),
+          'delivery_time' => random_int(1, 30),
+          'trailer_time' => random_int(1, 30),
+        ]);
+
+        $shift = Shift::inRandomOrder()->first();
+        $maps = [
+          'week_1' => [1, 7],
+          'week_2' => [8, 14],
+          'week_3' => [15, 21],
+          'week_4' => [22, $max],
+        ];
+
+        foreach ($maps as $key => [$first, $last]) {
+          $random_date = Carbon::create($date->year, $date->month, random_int($first, $last));
+
+          Logbook::create([
+            'date' => $random_date->toDateString(),
+            'operator' => 'Test Operator',
+            'location' => 'Test location',
+            'type' => $equipment->type,
+            'shift_id' => $shift->id,
+            'project_id' => $project->id,
+            'equipment_id' => $equipment->id,
+            ...$randoms->toArray(),
+          ]);
+        }
+      });
     }
   }
 }

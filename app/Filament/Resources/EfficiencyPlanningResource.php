@@ -16,7 +16,6 @@ use Filament\Infolists\Infolist;
 use App\Models\EfficiencyPlanning;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EfficiencyPlanningResource\Pages;
-use App\Filament\Resources\EfficiencyPlanningResource\RelationManagers\LogbooksRelationManager;
 
 class EfficiencyPlanningResource extends Resource
 {
@@ -138,6 +137,7 @@ class EfficiencyPlanningResource extends Resource
           ->numeric()
           ->sortable()
           ->toggleable(isToggledHiddenByDefault: true),
+
         Tables\Columns\TextColumn::make('total')
           ->label('Total planning time')
           ->sortable(),
@@ -145,7 +145,11 @@ class EfficiencyPlanningResource extends Resource
           ->label('Total planning price')
           ->money('IDR')
           ->sortable(),
+
         Tables\Columns\TextColumn::make('actual.total')
+          ->label('Total usage time')
+          ->sortable(),
+        Tables\Columns\TextColumn::make('actual.price')
           ->label('Actual usage')
           ->money('IDR')
           ->sortable(),
@@ -210,13 +214,6 @@ class EfficiencyPlanningResource extends Resource
             Infolists\Components\TextEntry::make('actual.available.price')->label('Leftover budget')->money('IDR'),
           ])->columns(2),
       ])->columns(2);
-  }
-
-  public static function getRelations(): array
-  {
-    return [
-      LogbooksRelationManager::class,
-    ];
   }
 
   public static function getPages(): array

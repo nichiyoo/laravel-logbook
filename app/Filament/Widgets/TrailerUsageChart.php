@@ -12,7 +12,7 @@ use Filament\Widgets\ChartWidget;
 class TrailerUsageChart extends ChartWidget
 {
   protected static ?string $heading = 'Trailer usage hour chart this year';
-  protected static ?int $sort = 3;
+  protected static ?int $sort = 2;
 
   protected function getOptions(): array
   {

@@ -5,6 +5,7 @@ namespace App\Models;
 use stdClass;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -54,14 +55,7 @@ class EfficiencyPlanning extends Model
    */
   public function logbooks()
   {
-    $start = Carbon::create($this->year, $this->month, 1)->startOfMonth();
-    $month = Carbon::create($this->year, $this->month, 1)->endOfMonth();
-
-    return $this->hasMany(Logbook::class, 'equipment_id', 'equipment_id')
-      ->whereBetween('date', [
-        $start->toDateString(),
-        $month->toDateString()
-      ]);
+    return $this->hasMany(Logbook::class, 'equipment_id', 'equipment_id');
   }
 
   /**
@@ -87,16 +81,18 @@ class EfficiencyPlanning extends Model
       $start = Carbon::create($year, $month, $first)->startOfDay();
       $end = Carbon::create($year, $month, $last)->endOfDay();
 
-      $result = $this->logbooks->filter(function ($logbook) use ($start, $end) {
-        $date = Carbon::parse($logbook->date);
-        return $date->between($start, $end);
-      })->sum(function ($logbook) {
-        return array_sum([
-          $logbook->work_time,
-          $logbook->delivery_time,
-          $logbook->trailer_time,
-        ]);
-      });
+      $result = $this->logbooks
+        ->whereBetween('date', [
+          $start->toDateString(),
+          $end->toDateString()
+        ])
+        ->sum(function ($logbook) {
+          return array_sum([
+            $logbook->work_time,
+            $logbook->delivery_time,
+            $logbook->trailer_time,
+          ]);
+        });
 
       $data->{$key} = $result;
       $total += $result;
