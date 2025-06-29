@@ -44,13 +44,7 @@ class DailyReportResource extends Resource
         Forms\Components\Select::make('shift_id')
           ->relationship('shift', 'label')
           ->searchable()
-          ->preload()
-          ->createOptionForm([
-            Forms\Components\TextInput::make('label')
-              ->required(),
-            Forms\Components\Textarea::make('description')
-              ->required(),
-          ]),
+          ->preload(),
         FilamentUpload\Forms\Components\AdvancedFileUpload::make('report')
           ->label('Upload report')
           ->acceptedFileTypes([

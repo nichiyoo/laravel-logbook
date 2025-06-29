@@ -65,7 +65,7 @@ class DatabaseSeeder extends Seeder
     foreach ($equipments as $equipment) {
       Equipment::create([
         ...$equipment,
-        'price' => random_int(1000, 10000) * 1000,
+        'price' => random_int(10, 100) * 10000,
       ]);
     }
 

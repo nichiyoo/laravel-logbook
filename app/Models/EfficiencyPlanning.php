@@ -40,7 +40,12 @@ class EfficiencyPlanning extends Model
   public function total(): Attribute
   {
     return Attribute::make(
-      get: fn() => $this->planning_week_1 + $this->planning_week_2 + $this->planning_week_3 + $this->planning_week_4,
+      get: fn() => array_sum([
+        $this->planning_week_1,
+        $this->planning_week_2,
+        $this->planning_week_3,
+        $this->planning_week_4,
+      ])
     );
   }
 
@@ -49,16 +54,14 @@ class EfficiencyPlanning extends Model
    */
   public function logbooks()
   {
+    $start = Carbon::create($this->year, $this->month, 1)->startOfMonth();
+    $month = Carbon::create($this->year, $this->month, 1)->endOfMonth();
+
     return $this->hasMany(Logbook::class, 'equipment_id', 'equipment_id')
-      ->whereYear('date', $this->year)
-      ->whereMonth('date', $this->month)
-      ->select(
-        'equipment_id',
-        'date',
-        'work_time',
-        'delivery_time',
-        'trailer_time'
-      );
+      ->whereBetween('date', [
+        $start->toDateString(),
+        $month->toDateString()
+      ]);
   }
 
   /**
@@ -84,7 +87,7 @@ class EfficiencyPlanning extends Model
       $start = Carbon::create($year, $month, $first)->startOfDay();
       $end = Carbon::create($year, $month, $last)->endOfDay();
 
-      $weekTotal = $this->logbooks->filter(function ($logbook) use ($start, $end) {
+      $result = $this->logbooks->filter(function ($logbook) use ($start, $end) {
         $date = Carbon::parse($logbook->date);
         return $date->between($start, $end);
       })->sum(function ($logbook) {
@@ -95,8 +98,8 @@ class EfficiencyPlanning extends Model
         ]);
       });
 
-      $data->{$key} = $weekTotal;
-      $total += $weekTotal;
+      $data->{$key} = $result;
+      $total += $result;
     }
 
     $plannings = array_sum([
@@ -106,9 +109,12 @@ class EfficiencyPlanning extends Model
       $this->planning_week_4,
     ]);
 
-    $data->total = $total * $this->equipment->price;
-    $data->efficiency_time = $total - $plannings;
-    $data->efficiency = $data->efficiency_time * $this->equipment->price;
+    $data->total = $total;
+    $data->price = $total * $this->equipment->price;
+
+    $data->available = new stdClass();
+    $data->available->time = $plannings - $total;
+    $data->available->price = $data->available->time * $this->equipment->price;
 
     return $data;
   }

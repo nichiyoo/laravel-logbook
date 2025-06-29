@@ -26,6 +26,11 @@ class ShiftResource extends Resource
     return __('Management');
   }
 
+  public static function shouldRegisterNavigation(): bool
+  {
+    return false;
+  }
+
   public static function form(Form $form): Form
   {
     return $form

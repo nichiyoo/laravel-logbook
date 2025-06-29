@@ -16,6 +16,7 @@ use Filament\Infolists\Infolist;
 use App\Models\EfficiencyPlanning;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EfficiencyPlanningResource\Pages;
+use App\Filament\Resources\EfficiencyPlanningResource\RelationManagers\LogbooksRelationManager;
 
 class EfficiencyPlanningResource extends Resource
 {
@@ -59,14 +60,7 @@ class EfficiencyPlanningResource extends Resource
       fn($planning) => Forms\Components\TextInput::make($planning)
         ->required()
         ->numeric()
-        ->default(0)
-        ->live()
-        ->afterStateUpdated(function (Get $get, Set $set) {
-          $equipment = Equipment::find($get('equipment_id'));
-          if ($equipment === null) return;
-          $weeks = collect(self::$plannings)->map(fn($item) => filled($get($item)) ? $get($item) : 0);
-          $set('target', $weeks->sum() * $equipment->price);
-        }),
+        ->default(0),
       self::$plannings
     );
 
@@ -84,22 +78,21 @@ class EfficiencyPlanningResource extends Resource
           ->options(Equipment::all()->pluck('label', 'id'))
           ->columnSpanFull()
           ->searchable()
-          ->required()
-          ->live()
-          ->afterStateUpdated(function (Get $get, Set $set) {
-            $equipment = Equipment::find($get('equipment_id'));
-            if ($equipment === null) return;
-
-            $weeks = collect(self::$plannings)->map(fn($planningWeek) => $get($planningWeek));
-            $set('target', $weeks->sum() * $equipment->price);
-          }),
+          ->required(),
         ...$plannings,
         Forms\Components\TextInput::make('target')
           ->prefix('Rp')
           ->required()
           ->numeric()
-          ->live()
-          ->disabled(fn(Get $get) => $get('equipment_id') === null)
+          ->hintAction(
+            Forms\Components\Actions\Action::make('Calculate target')
+              ->action(function (Get $get, Set $set) {
+                $equipment = Equipment::find($get('equipment_id'));
+                if ($equipment === null) return;
+                $weeks = collect(self::$plannings)->map(fn($planningWeek) => $get($planningWeek));
+                $set('target', $weeks->sum() * $equipment->price);
+              }),
+          )
       ]);
   }
 
@@ -152,8 +145,8 @@ class EfficiencyPlanningResource extends Resource
           ->label('Total planning price')
           ->money('IDR')
           ->sortable(),
-        Tables\Columns\TextColumn::make('actual.efficiency')
-          ->label('Efficiency price')
+        Tables\Columns\TextColumn::make('actual.total')
+          ->label('Actual usage')
           ->money('IDR')
           ->sortable(),
       ])
@@ -205,14 +198,16 @@ class EfficiencyPlanningResource extends Resource
             Infolists\Components\TextEntry::make('actual.actual_week_2')->label('Actual week 2')->badge()->numeric(),
             Infolists\Components\TextEntry::make('actual.actual_week_3')->label('Actual week 3')->badge()->numeric(),
             Infolists\Components\TextEntry::make('actual.actual_week_4')->label('Actual week 4')->badge()->numeric(),
-            Infolists\Components\TextEntry::make('actual.total')->money('IDR'),
+            Infolists\Components\TextEntry::make('actual.price')->money('IDR'),
           ])->columns(5),
 
         Infolists\Components\Section::make('Efficiency')
           ->description('Summary of equipment efficiency achievement')
           ->schema([
-            Infolists\Components\TextEntry::make('actual.efficiency_time')->label('Efficiency time')->badge()->numeric(),
-            Infolists\Components\TextEntry::make('actual.efficiency')->label('Efficiency price')->money('IDR'),
+            Infolists\Components\TextEntry::make('total')->label('Total weekly planning')->badge()->numeric(),
+            Infolists\Components\TextEntry::make('actual.total')->label('Total actual usage')->badge()->numeric(),
+            Infolists\Components\TextEntry::make('actual.available.time')->label('Leftover time')->badge()->numeric(),
+            Infolists\Components\TextEntry::make('actual.available.price')->label('Leftover budget')->money('IDR'),
           ])->columns(2),
       ])->columns(2);
   }
@@ -220,7 +215,7 @@ class EfficiencyPlanningResource extends Resource
   public static function getRelations(): array
   {
     return [
-      //
+      LogbooksRelationManager::class,
     ];
   }
 

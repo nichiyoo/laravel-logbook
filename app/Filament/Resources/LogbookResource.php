@@ -88,21 +88,10 @@ class LogbookResource extends Resource
         Forms\Components\Select::make('shift_id')
           ->relationship('shift', 'label')
           ->searchable()
-          ->preload()
-          ->createOptionForm([
-            Forms\Components\TextInput::make('label')
-              ->required(),
-            Forms\Components\Textarea::make('description')
-              ->required(),
-          ]),
+          ->preload(),
         Forms\Components\Select::make('equipment_id')
-          ->relationship('equipment', 'label')
-          ->options(
-            fn(Get $get): Collection => Equipment::query()
-              ->where('type', $get('type'))
-              ->get()
-              ->map(fn(Equipment $equipment) => $equipment->label)
-          )
+          ->relationship('equipment', 'name')
+          ->getOptionLabelFromRecordUsing(fn(Equipment $equipment) => $equipment->label)
           ->searchable()
           ->preload()
           ->required()
