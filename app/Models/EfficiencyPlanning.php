@@ -45,57 +45,71 @@ class EfficiencyPlanning extends Model
   }
 
   /**
-   * Get the actual weeks of the efficiency planning.
+   * Relationship to get all logbooks for this efficiency planning period
    */
-  public function actual(): Attribute
+  public function logbooks()
   {
-    return Attribute::make(
-      get: function () {
-        $data = new stdClass();
-        $total = 0;
+    return $this->hasMany(Logbook::class, 'equipment_id', 'equipment_id')
+      ->whereYear('date', $this->year)
+      ->whereMonth('date', $this->month)
+      ->select(
+        'equipment_id',
+        'date',
+        'work_time',
+        'delivery_time',
+        'trailer_time'
+      );
+  }
 
-        $year = $this->year;
-        $month = $this->month;
-        $days = Carbon::create($year, $month)->daysInMonth;
+  /**
+   * Get the actual weeks of the efficiency planning (using eager loaded data)
+   */
+  public function getActualAttribute()
+  {
+    $data = new stdClass();
+    $total = 0;
 
-        $maps = [
-          'actual_week_1' => [1, 7],
-          'actual_week_2' => [8, 14],
-          'actual_week_3' => [15, 21],
-          'actual_week_4' => [22, $days],
-        ];
+    $year = $this->year;
+    $month = $this->month;
+    $days = Carbon::create($year, $month)->daysInMonth;
 
-        foreach ($maps as $key => [$first, $last]) {
-          $start = Carbon::create($year, $month, $first)->startOfDay()->toDateString();
-          $end = Carbon::create($year, $month, $last)->endOfDay()->toDateString();
+    $maps = [
+      'actual_week_1' => [1, 7],
+      'actual_week_2' => [8, 14],
+      'actual_week_3' => [15, 21],
+      'actual_week_4' => [22, $days],
+    ];
 
-          $totals = Logbook::query()
-            ->where('equipment_id', $this->equipment_id)
-            ->whereBetween('date', [$start, $end])
-            ->selectRaw('
-                COALESCE(SUM(work_time), 0) as work,
-                COALESCE(SUM(delivery_time), 0) as delivery,
-                COALESCE(SUM(trailer_time), 0) as trailer
-            ')
-            ->first();
+    foreach ($maps as $key => [$first, $last]) {
+      $start = Carbon::create($year, $month, $first)->startOfDay();
+      $end = Carbon::create($year, $month, $last)->endOfDay();
 
-          $sum = $totals->work + $totals->delivery + $totals->trailer;
-          $data->{$key} = $sum;
-          $total += $sum;
-        }
-
-        $plannings = array_sum([
-          $this->planning_week_1,
-          $this->planning_week_2,
-          $this->planning_week_3,
-          $this->planning_week_4,
+      $weekTotal = $this->logbooks->filter(function ($logbook) use ($start, $end) {
+        $date = Carbon::parse($logbook->date);
+        return $date->between($start, $end);
+      })->sum(function ($logbook) {
+        return array_sum([
+          $logbook->work_time,
+          $logbook->delivery_time,
+          $logbook->trailer_time,
         ]);
+      });
 
-        $data->total = $total * $this->equipment->price;
-        $data->efficiency_time = $total - $plannings;
-        $data->efficiency = $data->efficiency_time * $this->equipment->price;
-        return $data;
-      },
-    );
+      $data->{$key} = $weekTotal;
+      $total += $weekTotal;
+    }
+
+    $plannings = array_sum([
+      $this->planning_week_1,
+      $this->planning_week_2,
+      $this->planning_week_3,
+      $this->planning_week_4,
+    ]);
+
+    $data->total = $total * $this->equipment->price;
+    $data->efficiency_time = $total - $plannings;
+    $data->efficiency = $data->efficiency_time * $this->equipment->price;
+
+    return $data;
   }
 }

@@ -42,7 +42,7 @@ class EfficiencyPlanningResource extends Resource
 
   public static function getEloquentQuery(): Builder
   {
-    return parent::getEloquentQuery()->with('equipment');
+    return parent::getEloquentQuery()->with('equipment', 'logbooks');
   }
 
   public static function form(Form $form): Form
@@ -150,6 +150,10 @@ class EfficiencyPlanningResource extends Resource
           ->sortable(),
         Tables\Columns\TextColumn::make('target')
           ->label('Total planning price')
+          ->money('IDR')
+          ->sortable(),
+        Tables\Columns\TextColumn::make('actual.efficiency')
+          ->label('Efficiency price')
           ->money('IDR')
           ->sortable(),
       ])
