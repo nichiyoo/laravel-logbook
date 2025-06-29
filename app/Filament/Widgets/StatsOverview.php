@@ -20,6 +20,11 @@ class StatsOverview extends BaseWidget
     return "Equipment usage statistics of " . now()->format('F') . " " . now()->format('Y');
   }
 
+  protected function getColumns(): int
+  {
+    return 2;
+  }
+
   protected function getStats(): array
   {
     $year = now()->year;
@@ -34,13 +39,12 @@ class StatsOverview extends BaseWidget
         COALESCE(SUM(trailer_time), 0) as trailer
       ');
 
-    $crane = $query->where('type', EquipmentType::CRANE)->first();
-    $trailer = $query->where('type', EquipmentType::TRAILER)->first();
+    $crane = $query->clone()->where('type', EquipmentType::CRANE)->first();
+    $trailer = $query->clone()->where('type', EquipmentType::TRAILER)->first();
 
     return [
-      Stat::make('Crane delivery time', $crane->delivery)->description('Total delivery time for crane equipment'),
-      Stat::make('Crane usage time', $crane->work + $crane->delivery)->description('Total work time for crane equipment'),
-      Stat::make('Trailer usage time', $trailer->trailer)->description('Total work time for trailer equipment'),
+      Stat::make('Crane usage time', $crane->work + $crane->delivery)->description('Total time usage for crane equipment'),
+      Stat::make('Trailer usage time', $trailer->trailer)->description('Total time usage for trailer equipment'),
     ];
   }
 }
