@@ -10,6 +10,8 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 
 class StatsOverview extends BaseWidget
 {
+  protected static ?string $pollingInterval = null;
+
   protected function getHeading(): ?string
   {
     return 'Stats Overview';

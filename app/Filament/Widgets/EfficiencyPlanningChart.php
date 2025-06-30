@@ -9,6 +9,7 @@ use App\Models\EfficiencyPlanning;
 class EfficiencyPlanningChart extends ChartWidget
 {
   protected static ?string $heading = 'Efficiency planning chart';
+  protected static ?string $pollingInterval = null;
   protected int | string | array $columnSpan = 2;
   protected static ?int $sort = 3;
 
@@ -33,29 +34,35 @@ class EfficiencyPlanningChart extends ChartWidget
   protected function getData(): array
   {
     $year = now()->year;
-    $months = range(1, 12);
+    $ranges = range(1, 12);
 
-    $data = collect($months)->map(function ($month) use ($year) {
-      $date = Carbon::create($year, $month, 1);
+    $plannings = EfficiencyPlanning::with(['equipment', 'logbooks'])
+      ->where('year', $year)
+      ->whereBetween('month', [1, 12])
+      ->get();
 
-      $plannings = EfficiencyPlanning::with('equipment', 'logbooks')
-        ->where('year', $date->year)
-        ->where('month', $date->month)
-        ->get();
-
-      $total = $plannings->sum(function ($planning) {
+    $monthly = $plannings->groupBy('month')->map(function ($monthPlannings, $month) {
+      $total = $monthPlannings->sum(function ($planning) {
         return $planning->total * $planning->equipment->price;
       });
 
-      $actual = $plannings->sum(function ($planning) {
+      $actual = $monthPlannings->sum(function ($planning) {
         return $planning->actual->price;
       });
 
       return [
-        'month' => $date->format('M'),
+        'month' => Carbon::create(null, $month, 1)->format('M'),
         'total_planning' => $total,
         'total_actual' => $actual,
       ];
+    });
+
+    $data = collect($ranges)->map(function ($month) use ($monthly) {
+      return $monthly->get($month, [
+        'month' => Carbon::create(null, $month, 1)->format('M'),
+        'total_planning' => 0,
+        'total_actual' => 0,
+      ]);
     });
 
     $labels = $data->pluck('month');

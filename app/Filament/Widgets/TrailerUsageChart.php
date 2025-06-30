@@ -12,6 +12,7 @@ use Filament\Widgets\ChartWidget;
 class TrailerUsageChart extends ChartWidget
 {
   protected static ?string $heading = 'Trailer usage hour chart this year';
+  protected static ?string $pollingInterval = null;
   protected static ?int $sort = 2;
 
   protected function getOptions(): array
@@ -51,6 +52,7 @@ class TrailerUsageChart extends ChartWidget
     $end = now()->endOfYear();
 
     $data = Trend::query(Logbook::where('type', EquipmentType::TRAILER))
+      ->dateColumn('date')
       ->between(start: $start, end: $end)
       ->perMonth()
       ->sum('trailer_time');

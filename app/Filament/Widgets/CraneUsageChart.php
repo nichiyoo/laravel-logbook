@@ -12,6 +12,7 @@ use Filament\Widgets\ChartWidget;
 class CraneUsageChart extends ChartWidget
 {
   protected static ?string $heading = 'Crane usage hours chart this year';
+  protected static ?string $pollingInterval = null;
   protected static ?int $sort = 1;
 
   protected function getOptions(): array
@@ -30,13 +31,11 @@ class CraneUsageChart extends ChartWidget
           'ticks' => [
             'stepSize' => 1,
           ],
-          'stacked' => true,
         ],
         'x' => [
           'grid' => [
             'display' => false,
           ],
-          'stacked' => true,
         ],
       ],
       'plugins' => [
@@ -52,32 +51,39 @@ class CraneUsageChart extends ChartWidget
     $start = now()->startOfYear();
     $end = now()->endOfYear();
 
-    $work = Trend::query(Logbook::where('type', EquipmentType::CRANE))
+    $works = Trend::query(Logbook::where('type', EquipmentType::CRANE))
+      ->dateColumn('date')
       ->between(start: $start, end: $end)
       ->perMonth()
       ->sum('work_time');
 
-    $delivery = Trend::query(Logbook::where('type', EquipmentType::CRANE))
+    $deliveries = Trend::query(Logbook::where('type', EquipmentType::CRANE))
+      ->dateColumn('date')
       ->between(start: $start, end: $end)
       ->perMonth()
       ->sum('delivery_time');
 
+    $combined = collect(array_map(
+      function ($work, $delivery) {
+        return (object) [
+          'date' => $work->date,
+          'aggregate' => $work->aggregate + $delivery->aggregate,
+        ];
+      },
+      $works->toArray(),
+      $deliveries->toArray()
+    ))->map(fn(object $value) => new TrendValue($value->date, $value->aggregate));
+
     return [
       'datasets' => [
         [
-          'label' => 'Work time',
-          'data' => $work->map(fn(TrendValue $value) => $value->aggregate),
+          'label' => 'Crane usage',
+          'data' => $combined->map(fn(TrendValue $value) => $value->aggregate),
           'backgroundColor' => '#2a9d90',
           'borderColor' => '#2a9d90',
         ],
-        [
-          'label' => 'Delivery time',
-          'data' => $delivery->map(fn(TrendValue $value) => $value->aggregate),
-          'backgroundColor' => '#e76e50',
-          'borderColor' => '#e76e50',
-        ]
       ],
-      'labels' => $work->map(fn(TrendValue $value) => Carbon::createFromFormat('Y-m', $value->date)->format('M')),
+      'labels' => $combined->map(fn(TrendValue $value) => Carbon::createFromFormat('Y-m', $value->date)->format('M')),
     ];
   }
 
